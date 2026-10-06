@@ -44,7 +44,7 @@ def main() -> None:
         mismatches += status != "OK"
         lines.append(f"  {name:<20} {installed:<28} {status}")
 
-    lines += ["", f"Pinned packages matching requirements.txt: {len(pins) - mismatches}/{len(pins)}"]
+    lines += ["", f"packages matching requirements.txt: {len(pins) - mismatches}/{len(pins)}"]
 
     text = "\n".join(lines)
     print(text)

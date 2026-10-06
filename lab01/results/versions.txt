@@ -30,4 +30,4 @@ Pinned packages (requirements.txt):
   joblib               1.4.2                        OK
   tqdm                 4.66.4                       OK
 
-Pinned packages matching requirements.txt: 25/25
+packages matching requirements.txt: 25/25
