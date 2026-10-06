@@ -1,0 +1,19 @@
+# Data is downloaded by scripts, never committed
+data/
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Experiment tracking / emissions output
+mlruns/
+emissions.csv
+
+# IDE
+.idea/
+.vscode/
