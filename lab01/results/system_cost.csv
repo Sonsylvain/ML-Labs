@@ -1,0 +1,3 @@
+model,train_time_median_ms,train_time_min_ms,train_time_max_ms,infer_latency_median_ms,infer_latency_p95_ms,model_size_bytes,model_size_kb,n_parameters,runtime_rss_mb,train_peak_rss_mb,train_delta_rss_mb,infer_peak_rss_mb,infer_delta_rss_mb,os_peak_working_set_mb
+logistic_regression,883.1161,826.6925,916.2467,0.2372,0.3276,1055,1.0303,31,142.9102,144.1875,0.6523,144.2539,0.0195,144.2656
+random_forest,495.0236,432.599,562.8232,12.2585,32.4569,290889,284.0713,18828,142.9883,144.2695,0.6328,144.6992,0.0742,145.1406
