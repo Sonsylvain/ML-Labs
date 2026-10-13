@@ -1,0 +1,35 @@
+
+=== W = 16  (sample 0, h = 1e-05) ===
+  param             analytic       numeric    rel err
+  W1[12, 9]     -3.39820e-04  -3.39820e-04   3.53e-08  OK
+  W2[14, 9]      8.51361e-04   8.51361e-04   1.03e-08  OK
+  W3[3, 9]       7.93451e-06   7.93450e-06   9.53e-07  OK
+  W1[43, 15]     5.10288e-04   5.10288e-04   1.73e-08  OK
+  W2[4, 14]      3.81486e-04   3.81486e-04   1.85e-10  OK
+  W3[3, 4]       7.93420e-06   7.93419e-06   5.56e-07  OK
+  W1[53, 14]    -3.04824e-05  -3.04824e-05   4.52e-08  OK
+  W2[8, 9]       3.20539e-04   3.20539e-04   1.52e-08  OK
+  W3[10, 3]      1.75997e-04   1.75997e-04   3.08e-08  OK
+  W1[3, 9]      -3.88365e-04  -3.88365e-04   6.72e-09  OK
+  passed 10/10 -> PASS (need >= 9)
+  robustness: 18/20 different samples pass; checks passed per trial = [9, 8, 10, 9, 10, 10, 10, 10, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 8]
+
+=== W = 64  (sample 0, h = 1e-05) ===
+  param             analytic       numeric    rel err
+  W1[37, 51]     4.57592e-04   4.57592e-04   4.26e-09  OK
+  W2[7, 40]      7.51573e-06   7.51572e-06   6.42e-07  OK
+  W3[21, 0]     -1.56408e-03  -1.56408e-03   1.97e-09  OK
+  W1[4, 31]     -3.51311e-04  -3.51311e-04   2.18e-08  OK
+  W2[56, 26]     2.74210e-04   2.74210e-04   1.53e-08  OK
+  W3[21, 7]      1.73786e-04   1.73786e-04   9.92e-09  OK
+  W1[13, 17]     1.07289e-04   1.07289e-04   2.72e-08  OK
+  W2[7, 35]      1.40702e-04   1.40702e-04   5.99e-08  OK
+  W3[63, 2]      2.35426e-04   2.35426e-04   3.24e-08  OK
+  W1[53, 40]     3.28337e-04   3.28337e-04   1.69e-08  OK
+  passed 10/10 -> PASS (need >= 9)
+  robustness: 20/20 different samples pass; checks passed per trial = [10, 10, 10, 9, 10, 10, 10, 10, 10, 10, 10, 9, 10, 9, 10, 10, 9, 10, 9, 10]
+
+why one sample: share of checks under 1e-6 vs batch size (W=16, 100 checks each)
+  B=1   pass 95/100   median |grad| 9.7e-05   median |analytic - numeric| 7.8e-12
+  B=8   pass 82/100   median |grad| 3.8e-05   median |analytic - numeric| 1.0e-11
+  B=32  pass 74/100   median |grad| 1.4e-05   median |analytic - numeric| 1.0e-11

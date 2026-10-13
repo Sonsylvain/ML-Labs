@@ -1,0 +1,6 @@
+ width  batch  forward_ms  backward_ms  bwd/fwd time  fwd_matmul_share  bwd_matmul_share  fwd_MFLOP  bwd_MFLOP  bwd/fwd FLOP  fwd_GFLOP/s  bwd_GFLOP/s
+    16     32      0.0612       0.0717        1.1708            0.2688            0.4103     0.0922     0.1188        1.2889       1.5059       1.6578
+    16   1257      1.3745       1.5900        1.1568            0.5216            0.6859     3.6202     4.6660        1.2889       2.6338       2.9345
+    64     32      0.1412       0.1530        1.0832            0.3009            0.5405     0.5652     0.8684        1.5362       4.0018       5.6755
+    64   1257      3.7095       5.6248        1.5164            0.4832            0.6074    22.2036    34.1100        1.5362       5.9857       6.0642
+Saved D:\school\5 semester\repo\lab02\results\timing.csv

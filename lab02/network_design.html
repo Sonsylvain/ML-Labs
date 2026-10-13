@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 2 Network Design</title>
+<style>
+  :root {
+    --bg: #f7f6f2; --card: #ffffff; --ink: #1d1d1f; --muted: #6b6b70; --line: #e3e1da;
+    --c-in: #3b6fd8; --c-h1: #d8763b; --c-h2: #8a4fd0; --c-out: #2a9d6a;
+    --wire: rgba(60,60,70,.10); --wire-hi: rgba(60,60,70,.55);
+    --mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141416; --card: #1d1d20; --ink: #ececef; --muted: #9a9aa2; --line: #2e2e33;
+      --wire: rgba(220,220,230,.08); --wire-hi: rgba(220,220,230,.6);
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 22px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-bottom: 18px; }
+  h2 { font-size: 17px; margin: 0 0 12px; }
+  .toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .toggle button { border: 0; background: transparent; color: var(--ink); padding: 6px 16px; font: inherit; cursor: pointer; }
+  .toggle button.on { background: var(--ink); color: var(--bg); }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .hint { color: var(--muted); font-size: 13px; }
+  svg { width: 100%; height: auto; display: block; }
+  svg text { fill: var(--ink); font-family: inherit; }
+  .wire { stroke: var(--wire); stroke-width: 1; transition: stroke .15s; }
+  .bundle.hi .wire { stroke: var(--wire-hi); }
+  .bundle { cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.hi td { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+  code, .mono { font-family: var(--mono); font-size: 13.5px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  .eq { font-family: var(--mono); font-size: 13.5px; line-height: 2; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .pixels { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; width: 150px; }
+  .pixels div { aspect-ratio: 1; border-radius: 2px; }
+  .flat { display: flex; flex-wrap: wrap; gap: 1px; margin-top: 8px; }
+  .flat div { width: 7px; height: 14px; }
+  .total td { font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Lab 2 — Network design</h1>
+  <p class="sub">Input 64 → hidden W → ReLU → hidden W → ReLU → output 10 → softmax</p>
+
+  <section class="card">
+    <div class="row">
+      <h2 style="margin:0">The network</h2>
+      <div class="toggle" id="toggle">
+        <button data-w="16" class="on">W = 16</button>
+        <button data-w="64">W = 64</button>
+      </div>
+    </div>
+    <p class="hint">Each line is one weight. Hover over a group of lines to see its weight matrix. Columns with more than 16 neurons are shortened with ⋮.</p>
+    <svg id="net" viewBox="0 0 1000 560" role="img" aria-label="Neural network diagram"></svg>
+  </section>
+
+  <section class="card">
+    <h2>Shapes and parameter count (W = <span id="wlabel">16</span>)</h2>
+    <table>
+      <thead><tr><th>Connection</th><th>Weights</th><th class="num">rows × cols</th><th class="num">count</th><th>Bias</th><th class="num">count</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <p class="hint" style="margin-top:10px">Rule: weight shape = (neurons on the left, neurons on the right). There is one bias per neuron on the right.
+      Total = W² + 76W + 10, so W=16 gives 1,482 and W=64 gives 8,970.</p>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>Equations for one batch of B images</h2>
+      <div class="eq">
+        <span class="dot" style="background:var(--c-h1)"></span>Z1 = X·W1 + b1 &nbsp;&nbsp;(B,64)·(64,W) → (B,W)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;A1 = ReLU(Z1) = max(0, Z1)<br>
+        <span class="dot" style="background:var(--c-h2)"></span>Z2 = A1·W2 + b2 &nbsp;(B,W)·(W,W) → (B,W)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;A2 = ReLU(Z2)<br>
+        <span class="dot" style="background:var(--c-out)"></span>Z3 = A2·W3 + b3 &nbsp;(B,W)·(W,10) → (B,10)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;P = softmax(Z3) &nbsp;each row sums to 1
+      </div>
+      <p class="hint">For a matrix product to work, the inner dimensions must match: (B,<b>64</b>)·(<b>64</b>,W).</p>
+    </section>
+
+    <section class="card">
+      <h2>Where the 64 inputs come from</h2>
+      <div style="display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap">
+        <div>
+          <div class="pixels" id="pixels"></div>
+          <div class="hint" style="margin-top:6px">8×8 image of the digit "0", pixel / 16</div>
+        </div>
+        <div style="flex:1; min-width:180px">
+          <div class="hint">flattened row by row into one vector of 64 values in [0, 1]:</div>
+          <div class="flat" id="flat"></div>
+          <p class="hint">This vector is one row of X, and one row feeds the 64 input neurons.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Initialisation</h2>
+    <p style="margin:0">Weights ~ <span class="mono">N(0, 0.01)</span> (std 0.01): small and random, which breaks symmetry. Biases = 0.
+    Because the weights are tiny, the logits Z3 are close to 0, so softmax gives each class about 0.1.
+    The untrained loss is therefore about −ln(0.1) = ln(10) ≈ 2.3026, which is the Task 4 sanity check.</p>
+  </section>
+</main>
+
+<script>
+const DIGIT0 = [0,0,5,13,9,1,0,0, 0,0,13,15,10,15,5,0, 0,3,15,2,0,11,8,0, 0,4,12,0,0,8,8,0,
+                0,5,8,0,0,9,8,0, 0,4,11,0,1,12,7,0, 0,2,14,5,10,12,0,0, 0,0,6,13,10,0,0,0];
+const shade = v => `rgba(59,111,216,${0.08 + 0.92 * v / 16})`;
+for (const v of DIGIT0) {
+  const a = document.createElement('div'); a.style.background = shade(v);
+  document.getElementById('pixels').appendChild(a);
+  const b = document.createElement('div'); b.style.background = shade(v);
+  document.getElementById('flat').appendChild(b);
+}
+
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.getElementById('net');
+const MAX_SHOWN = 16;
+const XS = [120, 400, 680, 900];
+const COLORS = ['var(--c-in)', 'var(--c-h1)', 'var(--c-h2)', 'var(--c-out)'];
+const TOP = 70, BOTTOM = 470;
+
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  parent.appendChild(e); return e;
+}
+
+// y positions of the drawn neurons; null marks the "⋮" gap
+function slots(n) {
+  let items;
+  if (n <= MAX_SHOWN) items = Array.from({length: n}, (_, i) => i);
+  else items = [0,1,2,3,4,5,6, null, n-7,n-6,n-5,n-4,n-3,n-2,n-1];
+  const step = (BOTTOM - TOP) / (MAX_SHOWN - 1);
+  const h = (items.length - 1) * step, y0 = (TOP + BOTTOM) / 2 - h / 2;
+  return items.map((idx, i) => ({ idx, y: y0 + i * step }));
+}
+
+function draw(W) {
+  svg.innerHTML = '';
+  const sizes = [64, W, W, 10];
+  const names = ['Input', 'Hidden 1', 'Hidden 2', 'Output'];
+  const acts = ['pixels', 'ReLU', 'ReLU', 'softmax'];
+  const cols = sizes.map(slots);
+
+  for (let l = 0; l < 3; l++) {
+    const g = el('g', { class: 'bundle', 'data-l': l + 1 }, svg);
+    for (const a of cols[l]) if (a.idx !== null)
+      for (const b of cols[l + 1]) if (b.idx !== null)
+        el('line', { class: 'wire', x1: XS[l], y1: a.y, x2: XS[l + 1], y2: b.y }, g);
+    // invisible hit area so the whole bundle is hoverable
+    el('rect', { x: XS[l] + 12, y: TOP - 10, width: XS[l + 1] - XS[l] - 24, height: BOTTOM - TOP + 20, fill: 'transparent' }, g);
+    const mx = (XS[l] + XS[l + 1]) / 2;
+    const t = el('text', { x: mx, y: 515, 'text-anchor': 'middle', 'font-size': 17, 'font-weight': 600 }, g);
+    t.textContent = `W${l + 1}  (${sizes[l]}, ${sizes[l + 1]})`;
+    const t2 = el('text', { x: mx, y: 537, 'text-anchor': 'middle', 'font-size': 13, fill: 'var(--muted)' }, g);
+    t2.textContent = `${sizes[l] * sizes[l + 1]} weights + b${l + 1} (${sizes[l + 1]},)`;
+    g.addEventListener('mouseenter', () => highlight(l + 1));
+    g.addEventListener('mouseleave', () => highlight(0));
+  }
+
+  cols.forEach((col, l) => {
+    for (const s of col) {
+      if (s.idx === null) {
+        const t = el('text', { x: XS[l], y: s.y + 7, 'text-anchor': 'middle', 'font-size': 22, fill: 'var(--muted)' }, svg);
+        t.textContent = '⋮'; continue;
+      }
+      el('circle', { cx: XS[l], cy: s.y, r: 9, fill: COLORS[l], stroke: 'var(--card)', 'stroke-width': 2 }, svg);
+      if (l === 3) {
+        const t = el('text', { x: XS[l] + 18, y: s.y + 5, 'font-size': 13, fill: 'var(--muted)' }, svg);
+        t.textContent = `P(${s.idx})`;
+      }
+    }
+    const h = el('text', { x: XS[l], y: 30, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: COLORS[l] }, svg);
+    h.textContent = `${names[l]} · ${sizes[l]}`;
+    const a = el('text', { x: XS[l], y: 50, 'text-anchor': 'middle', 'font-size': 13, fill: 'var(--muted)' }, svg);
+    a.textContent = acts[l];
+  });
+
+  // table
+  const rows = [];
+  let total = 0;
+  for (let l = 0; l < 3; l++) {
+    const w = sizes[l] * sizes[l + 1], b = sizes[l + 1]; total += w + b;
+    rows.push(`<tr data-l="${l + 1}"><td>${names[l]} → ${names[l + 1]}</td><td class="mono">W${l + 1}</td>
+      <td class="num mono">(${sizes[l]}, ${sizes[l + 1]})</td><td class="num">${w.toLocaleString()}</td>
+      <td class="mono">b${l + 1} (${b},)</td><td class="num">${b}</td></tr>`);
+  }
+  rows.push(`<tr class="total"><td colspan="3">Total parameters</td><td class="num" colspan="3">${total.toLocaleString()}</td></tr>`);
+  document.getElementById('tbody').innerHTML = rows.join('');
+  document.getElementById('wlabel').textContent = W;
+  document.querySelectorAll('#tbody tr[data-l]').forEach(tr => {
+    tr.addEventListener('mouseenter', () => highlight(+tr.dataset.l));
+    tr.addEventListener('mouseleave', () => highlight(0));
+  });
+}
+
+function highlight(l) {
+  document.querySelectorAll('.bundle').forEach(g => g.classList.toggle('hi', +g.dataset.l === l));
+  document.querySelectorAll('#tbody tr[data-l]').forEach(tr => tr.classList.toggle('hi', +tr.dataset.l === l));
+}
+
+document.getElementById('toggle').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  document.querySelectorAll('#toggle button').forEach(x => x.classList.toggle('on', x === b));
+  draw(+b.dataset.w);
+});
+draw(16);
+</script>
+</body>
+</html>
