@@ -40,6 +40,10 @@ The hand calculation is handwritten on paper. The scanned pages are below.
 | Page 1: MLP and CNN parameters | Page 2: Attention parameters and totals |
 |---|---|
 | ![hand calculation page 1](results/p1.jpeg) | ![hand calculation page 2](results/p2.jpeg) |
+
+| Page 3: whole-model FLOPs and FLOPs per parameter |
+|---|
+| ![hand calculation page 3](results/img.png) |
 Convention: FLOPs = 2 × multiply-adds, batch 1.
 
 **Parameters.** The hand counts match `torchinfo.summary` exactly for all three models (235,146 / 20,490 / 71,818).
