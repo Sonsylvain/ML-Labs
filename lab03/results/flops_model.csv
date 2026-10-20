@@ -1,0 +1,4 @@
+model,torchinfo_params,thop_params,hand_FLOPs,thop_FLOPs_fastpath,flopcounter_fastpath,thop_FLOPs_no_fastpath,flopcounter_no_fastpath
+MLP,235146,235146,469504,469504.0,469504,469504.0,469504
+CNN,20490,20490,2063488,2063488.0,2063488,2063488.0,2063488
+Attention,71818,3850,2329856,101632.0,101632,1182976.0,2198784

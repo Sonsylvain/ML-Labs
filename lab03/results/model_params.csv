@@ -1,0 +1,4 @@
+model,output_shape,params,in_100k_150k_target
+MLP,"(2, 10)",235146,False
+CNN,"(2, 10)",20490,False
+Attention,"(2, 10)",71818,False

@@ -1,0 +1,30 @@
+﻿
+=== MLP (235,146 params) ===
+  MLP       epoch 1/5  train_loss 0.4919  val_loss 0.4361  val_acc 0.8434  (33.0s)
+  MLP       epoch 2/5  train_loss 0.3545  val_loss 0.3666  val_acc 0.8604  (38.4s)
+  MLP       epoch 3/5  train_loss 0.3136  val_loss 0.3598  val_acc 0.8734  (33.6s)
+  MLP       epoch 4/5  train_loss 0.2893  val_loss 0.3399  val_acc 0.8780  (33.1s)
+  MLP       epoch 5/5  train_loss 0.2681  val_loss 0.3279  val_acc 0.8810  (32.6s)
+  MLP       TEST acc 0.8779
+
+=== CNN (20,490 params) ===
+  CNN       epoch 1/5  train_loss 0.5066  val_loss 0.4222  val_acc 0.8540  (50.0s)
+  CNN       epoch 2/5  train_loss 0.3371  val_loss 0.3410  val_acc 0.8746  (54.0s)
+  CNN       epoch 3/5  train_loss 0.2948  val_loss 0.3182  val_acc 0.8886  (58.1s)
+  CNN       epoch 4/5  train_loss 0.2718  val_loss 0.2990  val_acc 0.8930  (64.9s)
+  CNN       epoch 5/5  train_loss 0.2547  val_loss 0.2796  val_acc 0.8986  (61.7s)
+  CNN       TEST acc 0.8973
+
+=== Attention (71,818 params) ===
+  Attention epoch 1/5  train_loss 0.7862  val_loss 0.5295  val_acc 0.8116  (63.5s)
+  Attention epoch 2/5  train_loss 0.4762  val_loss 0.4911  val_acc 0.8266  (63.3s)
+  Attention epoch 3/5  train_loss 0.4180  val_loss 0.4271  val_acc 0.8512  (65.3s)
+  Attention epoch 4/5  train_loss 0.3863  val_loss 0.4259  val_acc 0.8536  (63.9s)
+  Attention epoch 5/5  train_loss 0.3698  val_loss 0.3849  val_acc 0.8582  (64.1s)
+  Attention TEST acc 0.8630
+
+Final (epoch 5):
+    model  train_loss  val_acc  test_loss  test_acc  epoch_seconds
+      MLP      0.2681   0.8810     0.3420    0.8779        32.6162
+      CNN      0.2547   0.8986     0.2856    0.8973        61.7341
+Attention      0.3698   0.8582     0.3904    0.8630        64.1020

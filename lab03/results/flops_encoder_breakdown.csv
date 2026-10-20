@@ -1,0 +1,6 @@
+part,hand_FLOPs
+QKV projections,393216
+scores Q.K^T,32768
+weights x V,32768
+output projection,131072
+FFN (2 linears),524288

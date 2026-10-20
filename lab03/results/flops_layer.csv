@@ -1,0 +1,4 @@
+layer,hand_FLOPs,thop_FLOPs_fastpath,flopcounter_fastpath,thop_FLOPs_no_fastpath,flopcounter_no_fastpath
+MLP Linear 784->256,401408,401408.0,401408,401408.0,401408
+CNN Conv2d 16->32 (14x14 out),1806336,1806336.0,1806336,1806336.0,1806336
+Attention encoder layer 1,1114112,0.0,0,540672.0,1048576

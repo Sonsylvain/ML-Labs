@@ -1,0 +1,5 @@
+train: 55000 samples, 430 batches
+val:   5000 samples, 40 batches
+test:  10000 samples, 79 batches
+batch size 128: x (128, 1, 28, 28) torch.float32, y (128,) torch.int64
+first batch after Normalize: mean 0.0740, std 1.0311
