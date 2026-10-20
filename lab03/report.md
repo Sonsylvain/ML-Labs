@@ -10,7 +10,6 @@ python lab03/src/run_all.py      # or the task*.py scripts one by one, from lab0
 |---|---|
 | `src/common.py`, `src/models.py` | data split/loaders, the three models |
 | `src/task1_dataset.py` … `src/task5_plots.py` | one script per task |
-| `task3_hand_calculations.pdf` | **Task 3 hand calculations** (parameters, FLOPs, comparison with thop) |
 | `results/` | CSV outputs, `torchinfo_summary.txt`, `training_output.txt`, `tradeoffs.png` |
 
 ## 1. Dataset
@@ -36,7 +35,11 @@ mean-pooled self-attention has no information about where each patch sits in the
 
 ## 3. Compute cost
 
-The full hand calculation is in [`task3_hand_calculations.pdf`](task3_hand_calculations.pdf).
+The hand calculation is handwritten on paper. The scanned pages are below.
+
+| Page 1: MLP and CNN parameters | Page 2: Attention parameters and totals |
+|---|---|
+| ![hand calculation page 1](results/p1.jpeg) | ![hand calculation page 2](results/p2.jpeg) |
 Convention: FLOPs = 2 × multiply-adds, batch 1.
 
 **Parameters.** The hand counts match `torchinfo.summary` exactly for all three models (235,146 / 20,490 / 71,818).
