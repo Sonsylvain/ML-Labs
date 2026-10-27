@@ -1,0 +1,7 @@
+feature,median,p01,p99
+age,37.0,17.0,74.0
+fnlwgt,178272.0,27035.2,509629.0
+education-num,10.0,3.0,16.0
+capital-gain,0.0,0.0,15024.0
+capital-loss,0.0,0.0,1980.0
+hours-per-week,40.0,8.0,80.0

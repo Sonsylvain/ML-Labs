@@ -1,0 +1,35 @@
+config:
+  seed: 42
+  dataset:
+    name: adult
+    version: 2
+    source: https://www.openml.org/d/1590
+    target: income
+    positive_label: '>50K'
+    expected_rows: 48842
+    expected_columns: 15
+  split:
+    test_size: 0.3
+    stratify: true
+  cleaning:
+    numeric_imputer: median
+    categorical_imputer: most_frequent
+    clip_quantiles:
+    - 0.01
+    - 0.99
+    drop_train_duplicates: true
+  model:
+    name: LogisticRegression
+    max_iter: 2000
+  label_audit:
+    sample_size: 50
+raw:
+  rows: 48842
+  columns: 15
+  sha256: 02a7bbc4a27c04e1d48193362caf1e3cecb4b700c4c09fff7ffbd11a70db11a2
+processed:
+  file: data/adult/adult_processed.csv
+  rows: 48818
+  columns: 19
+  sha256: 35d1279dfc962ed5fb66ca19d7ce298b4bc6271428ba75d5286e9fa2c6f0547f
+preprocessor: lab04/results/preprocessor.joblib

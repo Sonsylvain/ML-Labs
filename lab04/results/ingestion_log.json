@@ -1,0 +1,23 @@
+{
+  "source": "https://www.openml.org/d/1590",
+  "rows": 48842,
+  "columns": 15,
+  "column_names": [
+    "age",
+    "workclass",
+    "fnlwgt",
+    "education",
+    "education-num",
+    "marital-status",
+    "occupation",
+    "relationship",
+    "race",
+    "sex",
+    "capital-gain",
+    "capital-loss",
+    "hours-per-week",
+    "native-country",
+    "class"
+  ],
+  "raw_sha256": "02a7bbc4a27c04e1d48193362caf1e3cecb4b700c4c09fff7ffbd11a70db11a2"
+}

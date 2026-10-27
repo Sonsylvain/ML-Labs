@@ -1,0 +1,28 @@
+# Lab 4 pipeline configuration. Every step reads its settings from here.
+seed: 42
+
+dataset:
+  name: adult
+  version: 2
+  source: https://www.openml.org/d/1590
+  target: income            # raw OpenML column is "class", renamed to the schema name
+  positive_label: ">50K"
+  expected_rows: 48842
+  expected_columns: 15
+
+split:
+  test_size: 0.30
+  stratify: true
+
+cleaning:
+  numeric_imputer: median
+  categorical_imputer: most_frequent
+  clip_quantiles: [0.01, 0.99]
+  drop_train_duplicates: true
+
+model:
+  name: LogisticRegression
+  max_iter: 2000
+
+label_audit:
+  sample_size: 50

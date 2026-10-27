@@ -1,0 +1,11 @@
+item,value
+train rows after split,34189.0
+train duplicates dropped,24.0
+train rows after dedup,34165.0
+test rows (untouched),14653.0
+train positive rate,0.2394
+test positive rate,0.2393
+train cells imputed,4446.0
+test cells imputed,2013.0
+train numeric cells clipped,2357.0
+test numeric cells clipped,1026.0

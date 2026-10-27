@@ -1,0 +1,3 @@
+features,n_input_features,test_accuracy,test_f1
+without derived features,14,0.854,0.6601
+with capital_net + hours_per_age,16,0.8578,0.6696
