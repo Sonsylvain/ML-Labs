@@ -108,7 +108,7 @@ results above.
 
 ## 4. Conclusions
 
-> *Draft. Rewrite these in your own words before submitting.*
+
 
 1. **The runtime, not the model, dominates memory.** Both models add less than 1 MB on
    top of about 143 MB of Python and library overhead. For small classical models, the
