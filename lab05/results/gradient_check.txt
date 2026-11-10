@@ -1,0 +1,6 @@
+expression ((a*b + c)**2).relu().sum(), a, b, c ~ N(0,1) of shape (3, 4), float64, seed 42
+forward value: engine 15.804963129321   pytorch 15.804963129321   diff 1.8e-15
+36 gradients compared (a, b, c x 12)
+max |engine - pytorch| = 0.000e+00
+max |engine - numeric| = 1.934e-09   (central difference, eps = 1e-06)
+tolerance 1e-06: PASS

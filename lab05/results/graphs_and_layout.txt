@@ -1,0 +1,45 @@
+== autograd backward graph (recorded during forward of model(x).mean()) ==
+MeanBackward0
+  SigmoidBackward0
+    AddmmBackward0
+      AccumulateGrad
+      ReluBackward0
+        AddmmBackward0
+          AccumulateGrad
+          TBackward0
+            AccumulateGrad
+      TBackward0
+        AccumulateGrad
+
+== torch.fx symbolic trace (forward graph) ==
+graph():
+    %input_1 : [num_users=1] = placeholder[target=input]
+    %_0 : [num_users=1] = call_module[target=0](args = (%input_1,), kwargs = {})
+    %_1 : [num_users=1] = call_module[target=1](args = (%_0,), kwargs = {})
+    %_2 : [num_users=1] = call_module[target=2](args = (%_1,), kwargs = {})
+    %_3 : [num_users=1] = call_module[target=3](args = (%_2,), kwargs = {})
+    return _3
+== torch.jit.trace graph ==
+graph(%self.1 : __torch__.torch.nn.modules.container.Sequential,
+      %input.1 : Float(64, 2, strides=[2, 1], requires_grad=0, device=cpu)):
+  %_3 : __torch__.torch.nn.modules.activation.Sigmoid = prim::GetAttr[name="3"](%self.1)
+  %_2 : __torch__.torch.nn.modules.linear.___torch_mangle_0.Linear = prim::GetAttr[name="2"](%self.1)
+  %_1 : __torch__.torch.nn.modules.activation.ReLU = prim::GetAttr[name="1"](%self.1)
+  %_0 : __torch__.torch.nn.modules.linear.Linear = prim::GetAttr[name="0"](%self.1)
+  %40 : Tensor = prim::CallMethod[name="forward"](%_0, %input.1)
+  %41 : Tensor = prim::CallMethod[name="forward"](%_1, %40)
+  %42 : Tensor = prim::CallMethod[name="forward"](%_2, %41)
+  %43 : Tensor = prim::CallMethod[name="forward"](%_3, %42)
+  return (%43)
+
+== torch.compile ==
+torch.compile (inductor): UNSUPPORTED here -> BackendCompilerFailed: InvalidCxxCompiler: No working C++ compiler found in torch._inductor.config.cpp.cxx: (None, 'g++')
+
+== tensor layout ==
+  a                      shape (4096, 4096)  dtype torch.float32  stride (4096, 1)  contiguous True
+  a.t() (view)           shape (4096, 4096)  dtype torch.float32  stride (1, 4096)  contiguous False
+  a[:, ::2] (view)       shape (4096, 2048)  dtype torch.float32  stride (4096, 2)  contiguous False
+  a.t().contiguous()     shape (4096, 4096)  dtype torch.float32  stride (4096, 1)  contiguous True
+  a.t() shares storage with a: True
+  a.t().view(-1) -> RuntimeError: view size is not compatible with input tensor's size and stride (at least one dimension sp...
+

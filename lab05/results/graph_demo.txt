@@ -1,0 +1,14 @@
+f = (x*y + x)**2 at x = 2, y = -3
+topological order (parents before children):
+  n0   leaf               data    2.0000   grad   16.0000
+  n1   leaf               data   -3.0000   grad  -16.0000
+  n2   *(n0, n1)          data   -6.0000   grad   -8.0000
+  n3   +(n2, n0)          data   -4.0000   grad   -8.0000
+  n4   **2(n3)            data   16.0000   grad    1.0000
+df/dx = 16.0 (hand: 2x(y+1)^2 = 16)   df/dy = -16.0 (hand: 2x^2(y+1) = -16)
+
+g = a*a + a at a = 3: dg/da = 7.0 (hand: 2a + 1 = 7)
+  with '=' instead of '+=' the last rule to run would overwrite the others and give 1 or 3
+relu'(-1.5) = 0.0
+relu'(+0.0) = 0.0
+relu'(+2.5) = 1.0

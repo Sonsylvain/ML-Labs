@@ -1,0 +1,108 @@
+
+########## task3_graph.py ##########
+f = (x*y + x)**2 at x = 2, y = -3
+topological order (parents before children):
+  n0   leaf               data    2.0000   grad   16.0000
+  n1   leaf               data   -3.0000   grad  -16.0000
+  n2   *(n0, n1)          data   -6.0000   grad   -8.0000
+  n3   +(n2, n0)          data   -4.0000   grad   -8.0000
+  n4   **2(n3)            data   16.0000   grad    1.0000
+df/dx = 16.0 (hand: 2x(y+1)^2 = 16)   df/dy = -16.0 (hand: 2x^2(y+1) = -16)
+
+g = a*a + a at a = 3: dg/da = 7.0 (hand: 2a + 1 = 7)
+  with '=' instead of '+=' the last rule to run would overwrite the others and give 1 or 3
+relu'(-1.5) = 0.0
+relu'(+0.0) = 0.0
+relu'(+2.5) = 1.0
+
+########## task4_verify.py ##########
+expression ((a*b + c)**2).relu().sum(), a, b, c ~ N(0,1) of shape (3, 4), float64, seed 42
+forward value: engine 15.804963129321   pytorch 15.804963129321   diff 1.8e-15
+36 gradients compared (a, b, c x 12)
+max |engine - pytorch| = 0.000e+00
+max |engine - numeric| = 1.934e-09   (central difference, eps = 1e-06)
+tolerance 1e-06: PASS
+
+########## task5_moons.py ##########
+run 1  scalar engine 14.4757 s
+run 1  pytorch       0.1165 s
+run 2  scalar engine 18.3431 s
+run 2  pytorch       0.0614 s
+run 3  scalar engine 15.2266 s
+run 3  pytorch       0.0879 s
+run 4  scalar engine 18.5632 s
+run 4  pytorch       0.0997 s
+run 5  scalar engine 19.0449 s
+run 5  pytorch       0.1178 s
+       engine  median_seconds  per_epoch_ms  final_train_loss  train_acc  test_acc
+scalar engine       18.343098    183.430981          0.269035   0.878571  0.933333
+      pytorch        0.099734      0.997337          0.269035   0.878571  0.933333
+speed-up PyTorch vs engine: 183.9x
+max |param engine - param pytorch| after 100 epochs: 4.44e-16
+max |loss engine - loss pytorch| over all epochs: 4.44e-16
+
+########## task6_framework.py ##########
+torch.compile (inductor): UNSUPPORTED here -> BackendCompilerFailed: InvalidCxxCompiler: No working C++ compiler found in torch._inductor.config.cpp.cxx: (None, 'g++')
+ batch    variant  us_per_call  speedup_vs_eager
+     1      eager      120.510             1.000
+     1  jit.trace      111.949             1.076
+     1 jit.script       86.262             1.397
+    64      eager      133.525             1.000
+    64  jit.trace      115.893             1.152
+    64 jit.script       99.506             1.342
+  4096      eager      549.047             1.000
+  4096  jit.trace      656.088             0.837
+  4096 jit.script      512.989             1.070
+                          operation  contiguous_ms  non_contiguous_ms  slowdown
+              row sum  x.sum(dim=1)         44.533             97.518     2.190
+             elementwise  x * 2 + 1         32.651             31.163     0.954
+                    copy  x.clone()         16.502             16.518     1.001
+   matmul  x @ v (4096x4096 . 4096)          6.252              5.938     0.950
+ row sum  x.sum(dim=1)  [a[:, ::2]]         22.127             19.844     0.897
+elementwise  x * 2 + 1  [a[:, ::2]]         17.824             27.983     1.570
+make contiguous  a.t().contiguous()            NaN             92.010       NaN
+== autograd backward graph (recorded during forward of model(x).mean()) ==
+MeanBackward0
+  SigmoidBackward0
+    AddmmBackward0
+      AccumulateGrad
+      ReluBackward0
+        AddmmBackward0
+          AccumulateGrad
+          TBackward0
+            AccumulateGrad
+      TBackward0
+        AccumulateGrad
+
+== torch.fx symbolic trace (forward graph) ==
+graph():
+    %input_1 : [num_users=1] = placeholder[target=input]
+    %_0 : [num_users=1] = call_module[target=0](args = (%input_1,), kwargs = {})
+    %_1 : [num_users=1] = call_module[target=1](args = (%_0,), kwargs = {})
+    %_2 : [num_users=1] = call_module[target=2](args = (%_1,), kwargs = {})
+    %_3 : [num_users=1] = call_module[target=3](args = (%_2,), kwargs = {})
+    return _3
+== torch.jit.trace graph ==
+graph(%self.1 : __torch__.torch.nn.modules.container.Sequential,
+      %input.1 : Float(64, 2, strides=[2, 1], requires_grad=0, device=cpu)):
+  %_3 : __torch__.torch.nn.modules.activation.Sigmoid = prim::GetAttr[name="3"](%self.1)
+  %_2 : __torch__.torch.nn.modules.linear.___torch_mangle_0.Linear = prim::GetAttr[name="2"](%self.1)
+  %_1 : __torch__.torch.nn.modules.activation.ReLU = prim::GetAttr[name="1"](%self.1)
+  %_0 : __torch__.torch.nn.modules.linear.Linear = prim::GetAttr[name="0"](%self.1)
+  %40 : Tensor = prim::CallMethod[name="forward"](%_0, %input.1)
+  %41 : Tensor = prim::CallMethod[name="forward"](%_1, %40)
+  %42 : Tensor = prim::CallMethod[name="forward"](%_2, %41)
+  %43 : Tensor = prim::CallMethod[name="forward"](%_3, %42)
+  return (%43)
+
+== torch.compile ==
+torch.compile (inductor): UNSUPPORTED here -> BackendCompilerFailed: InvalidCxxCompiler: No working C++ compiler found in torch._inductor.config.cpp.cxx: (None, 'g++')
+
+== tensor layout ==
+  a                      shape (4096, 4096)  dtype torch.float32  stride (4096, 1)  contiguous True
+  a.t() (view)           shape (4096, 4096)  dtype torch.float32  stride (1, 4096)  contiguous False
+  a[:, ::2] (view)       shape (4096, 2048)  dtype torch.float32  stride (4096, 2)  contiguous False
+  a.t().contiguous()     shape (4096, 4096)  dtype torch.float32  stride (4096, 1)  contiguous True
+  a.t() shares storage with a: True
+  a.t().view(-1) -> RuntimeError: view size is not compatible with input tensor's size and stride (at least one dimension sp...
+

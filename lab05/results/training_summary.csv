@@ -1,0 +1,3 @@
+engine,median_seconds,per_epoch_ms,final_train_loss,train_acc,test_acc
+scalar engine,18.343098,183.430981,0.269035,0.878571,0.933333
+pytorch,0.099734,0.997337,0.269035,0.878571,0.933333

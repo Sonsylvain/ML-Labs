@@ -1,0 +1,8 @@
+operation,contiguous_ms,non_contiguous_ms,slowdown
+row sum  x.sum(dim=1),44.5330,97.5180,2.1898
+elementwise  x * 2 + 1,32.6513,31.1634,0.9544
+copy  x.clone(),16.5018,16.5179,1.0010
+matmul  x @ v (4096x4096 . 4096),6.2522,5.9377,0.9497
+"row sum  x.sum(dim=1)  [a[:, ::2]]",22.1267,19.8443,0.8969
+"elementwise  x * 2 + 1  [a[:, ::2]]",17.8241,27.9829,1.5699
+make contiguous  a.t().contiguous(),,92.0103,

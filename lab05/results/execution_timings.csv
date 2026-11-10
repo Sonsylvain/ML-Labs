@@ -1,0 +1,10 @@
+batch,variant,us_per_call,speedup_vs_eager
+1,eager,120.5105,1.0000
+1,jit.trace,111.9490,1.0765
+1,jit.script,86.2620,1.3970
+64,eager,133.5250,1.0000
+64,jit.trace,115.8935,1.1521
+64,jit.script,99.5060,1.3419
+4096,eager,549.0470,1.0000
+4096,jit.trace,656.0885,0.8368
+4096,jit.script,512.9890,1.0703
