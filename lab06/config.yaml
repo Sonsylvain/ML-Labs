@@ -1,0 +1,45 @@
+# Lab 6 training configuration. train.py reads only this file (plus optional --set overrides).
+# Base recipe = the best Lab 3 model: the CNN, Adam lr 1e-3, batch 128 on Fashion-MNIST.
+seed: 42
+threads: 4                     # torch intra-op threads, fixed so timings are comparable
+
+data:
+  name: FashionMNIST
+  root: data                   # relative to the repository root, git-ignored
+  n_train: 55000
+  n_val: 5000
+  mean: 0.2860
+  std: 0.3530
+  num_workers: 2               # chosen in Task 3: hides data loading; more workers only add start-up
+  persistent_workers: true     # only used when num_workers > 0
+
+model:
+  name: CNN                    # Conv16-Pool-Conv32-Pool-Linear, 20,490 parameters (Lab 3)
+
+training:
+  epochs: 10
+  batch_size: 128
+  accumulation_steps: 1        # Task 6: micro-batches per optimizer step
+  interrupt_after_epoch: null  # Task 7: simulate a crash after this epoch
+
+optimizer:
+  name: adam                   # adam | sgd
+  lr: 0.001
+  momentum: 0.9                # sgd only
+  weight_decay: 0.0
+
+scheduler:
+  name: none                   # none | step | cosine | plateau
+  step_size: 4                 # step: decay every 4 epochs
+  gamma: 0.1                   # step
+  factor: 0.1                  # plateau
+  patience: 1                  # plateau, watches val_loss
+
+checkpoint:
+  dir: lab06/checkpoints       # git-ignored; one sub-folder per run
+  every_epoch: true
+
+mlflow:
+  tracking_uri: lab06/mlruns   # git-ignored local file store; exported to results/mlflow_runs.csv
+  experiment: lab06-pipeline
+  run_name: baseline

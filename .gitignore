@@ -17,3 +17,6 @@ emissions.csv
 # IDE
 .idea/
 .vscode/
+
+# Lab 6 training checkpoints
+lab06/checkpoints/
