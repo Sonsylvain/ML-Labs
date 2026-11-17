@@ -1,0 +1,3 @@
+run,optimizer_steps,throughput_samples_s,train_seconds,peak_rss_increase_mb,final_train_loss,final_val_acc,test_acc
+batch256,1075,1498.09077,192.20625,81.67188,0.28988,0.89240,0.88590
+batch64x4,1075,1332.14163,214.24373,70.96094,0.28986,0.89260,0.88630

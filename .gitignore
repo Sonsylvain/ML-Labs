@@ -20,3 +20,6 @@ emissions.csv
 
 # Lab 6 training checkpoints
 lab06/checkpoints/
+
+# Lab 7 checkpoints (baseline, pruned and student weights)
+lab07/checkpoints/

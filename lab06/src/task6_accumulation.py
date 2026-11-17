@@ -5,6 +5,8 @@ Two checks:
 2. Training: per-epoch curves of the two 5-epoch runs (same seed, same data order, same Adam 1e-3).
 """
 
+import sys
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import torch
@@ -33,7 +35,7 @@ def one_step_check(cfg) -> float:
     return max((a.grad - b.grad).abs().max().item() for a, b in zip(big.parameters(), acc.parameters()))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and "--plot-only" not in sys.argv:
     cfg = load_config()
     diff = one_step_check(cfg)
     print(f"one step: max |grad(batch 256) - grad(64 x 4 accumulated)| = {diff:.2e}")
@@ -64,7 +66,10 @@ if __name__ == "__main__":
         f"max |grad(batch 256) - grad(64 x 4 accumulated)| over all parameters, first 256 samples: {diff:.3e}\n")
     print(cmp.to_string(index=False, float_format="%.5f"))
     print(sm.to_string(index=False, float_format="%.4f"))
+    plot(allc)
 
+
+def plot(allc: pd.DataFrame) -> None:
     fig, (l, r) = plt.subplots(1, 2, figsize=(10, 3.8))
     for name, g in allc.groupby("run", sort=False):
         style = "o-" if name == "batch256" else "x--"
@@ -77,3 +82,9 @@ if __name__ == "__main__":
         ax.legend()
     fig.tight_layout()
     fig.savefig(RESULTS_DIR / "accumulation.png", dpi=130)
+
+
+if __name__ == "__main__" and "--plot-only" in sys.argv:  # redraw from the saved CSV, no training
+    c = pd.read_csv(RESULTS_DIR / "accumulation_curves.csv")
+    plot(pd.concat([pd.DataFrame({"epoch": c.epoch, "train_loss": c.train_loss_256, "val_acc": c.val_acc_256, "run": "batch256"}),
+                    pd.DataFrame({"epoch": c.epoch, "train_loss": c.train_loss_64x4, "val_acc": c.val_acc_64x4, "run": "batch64x4"})]))

@@ -4,12 +4,14 @@ import json
 import random
 import subprocess
 import sys
-import tempfile
 import threading
 import time
 from pathlib import Path
 
-import numpy as np
+import matplotlib
+
+matplotlib.use("Agg")  # file-only backend: Tk fails when no desktop window has focus (locked screen)
+import numpy as np  # noqa: E402
 import psutil
 import torch
 import yaml
@@ -202,19 +204,20 @@ def run_training(overrides: list[str], resume: bool = False, check: bool = True)
 
     Returns None when the run exits early on purpose (Task 7's simulated crash) and check is False.
     """
-    with tempfile.TemporaryDirectory() as tmp:
-        out = Path(tmp) / "summary.json"
-        cmd = [sys.executable, "-W", "ignore", str(SRC_DIR / "train.py"), "--summary-out", str(out)]
-        for item in overrides:
-            cmd += ["--set", item]
-        if resume:
-            cmd.append("--resume")
-        print("$ train.py " + " ".join(cmd[6:]), flush=True)
-        proc = subprocess.run(cmd, cwd=REPO_DIR)
-        if proc.returncode != 0:
-            if check:
-                raise RuntimeError(f"train.py exited with {proc.returncode}")
-            return None
-        return json.loads(out.read_text())
+    cfg = load_config(overrides=overrides)
+    out = repo_path(cfg["checkpoint"]["dir"]) / cfg["mlflow"]["run_name"] / "summary.json"
+    out.unlink(missing_ok=True)
+    cmd = [sys.executable, "-W", "ignore", str(SRC_DIR / "train.py"), "--summary-out", str(out)]
+    for item in overrides:
+        cmd += ["--set", item]
+    if resume:
+        cmd.append("--resume")
+    print("$ train.py " + " ".join(cmd[6:]), flush=True)
+    proc = subprocess.run(cmd, cwd=REPO_DIR)
+    if proc.returncode != 0:
+        if check:
+            raise RuntimeError(f"train.py exited with {proc.returncode}")
+        return None
+    return json.loads(out.read_text())
 
 

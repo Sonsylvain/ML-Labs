@@ -1,0 +1,1 @@
+max |grad(batch 256) - grad(64 x 4 accumulated)| over all parameters, first 256 samples: 1.322e-07

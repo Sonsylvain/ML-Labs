@@ -10,21 +10,48 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import torch
 from torch import nn
-from torch.profiler import ProfilerActivity, profile, record_function
+from torch.profiler import ProfilerActivity, profile, record_function, schedule
 
 from common import RESULTS_DIR, build_loaders, build_model, build_optimizer, load_config, set_seeds
 
 PHASES = ["data_loading", "forward", "backward", "optimizer_step"]
 
 
+WINDOW = 50  # training steps per profiler window
+
+
 def profile_epoch(cfg: dict) -> tuple[dict, str]:
+    """Profile every step of one epoch, in consecutive windows of WINDOW steps.
+
+    Profiling the whole epoch as a single trace records millions of op events (with num_workers=0 every
+    per-sample ToTensor/Normalize is traced too); building key_averages() over them took > 6 GB of RAM and
+    stalled the run. A profiler schedule with active=WINDOW and no gaps still covers every step, and each
+    window is summarised (and freed) as soon as it closes. Closing a window (stopping the trace, post-processing it,
+    summarising it) happens inside prof.step(), so the time spent in prof.step() is profiler overhead, not
+    training, and is subtracted from the wall time.
+    """
     set_seeds(cfg["seed"])
     model = build_model(cfg)
     train_loader, *_ = build_loaders(cfg)
     opt = build_optimizer(cfg, model.parameters())
     loss_fn = nn.CrossEntropyLoss()
     model.train()
-    with profile(activities=[ProfilerActivity.CPU]) as prof:
+
+    totals = {p: 0.0 for p in PHASES}
+    state = {"table": None, "windows": 0}
+    overhead_s = 0.0
+
+    def on_window(prof) -> None:
+        avgs = prof.key_averages()
+        for e in avgs:
+            if e.key in totals:
+                totals[e.key] += e.cpu_time_total / 1e6
+        if state["table"] is None and state["windows"] == 1:  # second window: past worker start-up
+            state["table"] = avgs.table(sort_by="cpu_time_total", row_limit=25)
+        state["windows"] += 1
+
+    sched = schedule(wait=0, warmup=0, active=WINDOW, repeat=0)
+    with profile(activities=[ProfilerActivity.CPU], schedule=sched, on_trace_ready=on_window) as prof:
         t0 = time.perf_counter()
         it = iter(train_loader)
         while True:
@@ -40,10 +67,11 @@ def profile_epoch(cfg: dict) -> tuple[dict, str]:
             with record_function("optimizer_step"):
                 opt.step()
                 opt.zero_grad()
-        wall = time.perf_counter() - t0
-    totals = {e.key: e.cpu_time_total / 1e6 for e in prof.key_averages() if e.key in PHASES}
-    table = prof.key_averages().table(sort_by="cpu_time_total", row_limit=25)
-    return {"wall_s": wall, **{p: totals.get(p, 0.0) for p in PHASES}}, table
+            t_step = time.perf_counter()
+            prof.step()
+            overhead_s += time.perf_counter() - t_step
+        wall = time.perf_counter() - t0 - overhead_s  # the last, partial window is summarised after the clock stops
+    return {"wall_s": wall, "profiler_overhead_s": overhead_s, **totals}, state["table"] or ""
 
 
 def main() -> None:
@@ -59,6 +87,8 @@ def main() -> None:
             sec = other if phase == "other" else res[phase]
             rows.append({"num_workers": workers, "phase": phase, "seconds": sec, "share": sec / res["wall_s"]})
         rows.append({"num_workers": workers, "phase": "epoch_total", "seconds": res["wall_s"], "share": 1.0})
+        rows.append({"num_workers": workers, "phase": "profiler_overhead_excluded",
+                     "seconds": res["profiler_overhead_s"], "share": float("nan")})
         print(f"\nnum_workers={workers}: profiled epoch {res['wall_s']:.1f}s")
         for phase in PHASES + ["other"]:
             sec = other if phase == "other" else res[phase]

@@ -1,0 +1,301 @@
+########## task1_baseline ##########
+$ train.py 
+[baseline] epoch 1/10  lr 1.00e-03  train_loss 0.5279  val_loss 0.4429  val_acc 0.8400  48.0s (1146 samples/s)
+[baseline] epoch 2/10  lr 1.00e-03  train_loss 0.3524  val_loss 0.3339  val_acc 0.8816  34.4s (1598 samples/s)
+[baseline] epoch 3/10  lr 1.00e-03  train_loss 0.3080  val_loss 0.3100  val_acc 0.8902  28.9s (1900 samples/s)
+[baseline] epoch 4/10  lr 1.00e-03  train_loss 0.2845  val_loss 0.2998  val_acc 0.8976  40.1s (1372 samples/s)
+[baseline] epoch 5/10  lr 1.00e-03  train_loss 0.2645  val_loss 0.2944  val_acc 0.8952  32.3s (1703 samples/s)
+[baseline] epoch 6/10  lr 1.00e-03  train_loss 0.2501  val_loss 0.2823  val_acc 0.8992  37.2s (1479 samples/s)
+[baseline] epoch 7/10  lr 1.00e-03  train_loss 0.2383  val_loss 0.2658  val_acc 0.9060  32.0s (1718 samples/s)
+[baseline] epoch 8/10  lr 1.00e-03  train_loss 0.2271  val_loss 0.2515  val_acc 0.9104  32.1s (1711 samples/s)
+[baseline] epoch 9/10  lr 1.00e-03  train_loss 0.2166  val_loss 0.2640  val_acc 0.9102  32.2s (1711 samples/s)
+[baseline] epoch 10/10  lr 1.00e-03  train_loss 0.2090  val_loss 0.2574  val_acc 0.9084  34.6s (1590 samples/s)
+[baseline] test_acc 0.9032  peak RSS 426 MB (+72 MB during training)
+baseline: test_acc 0.9032, MLflow run dfe88b5684a34aa09373596b456cad8c
+########## task2_profile (rerun) ##########
+
+num_workers=0: profiled epoch 49.9s
+  data_loading      30.41s   60.9%
+  forward            8.21s   16.4%
+  backward          10.04s   20.1%
+  optimizer_step     1.21s    2.4%
+  other              0.07s    0.1%
+
+num_workers=2: profiled epoch 31.6s
+  data_loading       0.33s    1.1%
+  forward            9.74s   30.8%
+  backward          11.09s   35.1%
+  optimizer_step     1.29s    4.1%
+  other              9.13s   28.9%
+
+# (first Task 2 attempt in this run used the old overhead accounting and was replaced by the rerun above)
+########## task4_batch ##########
+$ train.py --set training.batch_size=32 --set training.epochs=5 --set mlflow.experiment=lab06-task4-batch --set mlflow.run_name=batch32
+2026/11/17 20:02:48 INFO mlflow.tracking.fluent: Experiment with name 'lab06-task4-batch' does not exist. Creating a new experiment.
+[batch32] epoch 1/5  lr 1.00e-03  train_loss 0.4377  val_loss 0.3685  val_acc 0.8690  76.6s (718 samples/s)
+[batch32] epoch 2/5  lr 1.00e-03  train_loss 0.3014  val_loss 0.3035  val_acc 0.8936  51.3s (1071 samples/s)
+[batch32] epoch 3/5  lr 1.00e-03  train_loss 0.2612  val_loss 0.2750  val_acc 0.8998  49.8s (1104 samples/s)
+[batch32] epoch 4/5  lr 1.00e-03  train_loss 0.2372  val_loss 0.2718  val_acc 0.9044  47.0s (1170 samples/s)
+[batch32] epoch 5/5  lr 1.00e-03  train_loss 0.2185  val_loss 0.2516  val_acc 0.9108  56.4s (976 samples/s)
+[batch32] test_acc 0.9067  peak RSS 426 MB (+71 MB during training)
+$ train.py --set training.batch_size=64 --set training.epochs=5 --set mlflow.experiment=lab06-task4-batch --set mlflow.run_name=batch64
+[batch64] epoch 1/5  lr 1.00e-03  train_loss 0.4758  val_loss 0.3840  val_acc 0.8624  64.0s (859 samples/s)
+[batch64] epoch 2/5  lr 1.00e-03  train_loss 0.3241  val_loss 0.3123  val_acc 0.8874  39.9s (1378 samples/s)
+[batch64] epoch 3/5  lr 1.00e-03  train_loss 0.2846  val_loss 0.2939  val_acc 0.8888  39.8s (1382 samples/s)
+[batch64] epoch 4/5  lr 1.00e-03  train_loss 0.2595  val_loss 0.2795  val_acc 0.8974  36.5s (1506 samples/s)
+[batch64] epoch 5/5  lr 1.00e-03  train_loss 0.2412  val_loss 0.2677  val_acc 0.9018  35.5s (1547 samples/s)
+[batch64] test_acc 0.8950  peak RSS 425 MB (+71 MB during training)
+$ train.py --set training.batch_size=128 --set training.epochs=5 --set mlflow.experiment=lab06-task4-batch --set mlflow.run_name=batch128
+[batch128] epoch 1/5  lr 1.00e-03  train_loss 0.5279  val_loss 0.4429  val_acc 0.8400  57.3s (960 samples/s)
+[batch128] epoch 2/5  lr 1.00e-03  train_loss 0.3524  val_loss 0.3339  val_acc 0.8816  32.8s (1678 samples/s)
+[batch128] epoch 3/5  lr 1.00e-03  train_loss 0.3080  val_loss 0.3100  val_acc 0.8902  32.1s (1713 samples/s)
+[batch128] epoch 4/5  lr 1.00e-03  train_loss 0.2845  val_loss 0.2998  val_acc 0.8976  32.8s (1675 samples/s)
+[batch128] epoch 5/5  lr 1.00e-03  train_loss 0.2645  val_loss 0.2944  val_acc 0.8952  29.7s (1851 samples/s)
+[batch128] test_acc 0.8913  peak RSS 428 MB (+72 MB during training)
+$ train.py --set training.batch_size=256 --set training.epochs=5 --set mlflow.experiment=lab06-task4-batch --set mlflow.run_name=batch256
+[batch256] epoch 1/5  lr 1.00e-03  train_loss 0.6269  val_loss 0.4356  val_acc 0.8476  56.6s (971 samples/s)
+[batch256] epoch 2/5  lr 1.00e-03  train_loss 0.3862  val_loss 0.3912  val_acc 0.8578  35.0s (1571 samples/s)
+[batch256] epoch 3/5  lr 1.00e-03  train_loss 0.3396  val_loss 0.3527  val_acc 0.8778  35.6s (1544 samples/s)
+[batch256] epoch 4/5  lr 1.00e-03  train_loss 0.3116  val_loss 0.3260  val_acc 0.8860  34.8s (1581 samples/s)
+[batch256] epoch 5/5  lr 1.00e-03  train_loss 0.2899  val_loss 0.3160  val_acc 0.8924  36.2s (1519 samples/s)
+[batch256] test_acc 0.8859  peak RSS 437 MB (+82 MB during training)
+$ train.py --set training.batch_size=512 --set training.epochs=5 --set mlflow.experiment=lab06-task4-batch --set mlflow.run_name=batch512
+[batch512] epoch 1/5  lr 1.00e-03  train_loss 0.7539  val_loss 0.4905  val_acc 0.8240  48.4s (1138 samples/s)
+[batch512] epoch 2/5  lr 1.00e-03  train_loss 0.4252  val_loss 0.4189  val_acc 0.8518  24.1s (2281 samples/s)
+[batch512] epoch 3/5  lr 1.00e-03  train_loss 0.3834  val_loss 0.3905  val_acc 0.8636  23.8s (2315 samples/s)
+[batch512] epoch 4/5  lr 1.00e-03  train_loss 0.3474  val_loss 0.3567  val_acc 0.8772  32.4s (1697 samples/s)
+[batch512] epoch 5/5  lr 1.00e-03  train_loss 0.3286  val_loss 0.3386  val_acc 0.8804  31.9s (1722 samples/s)
+[batch512] test_acc 0.8766  peak RSS 474 MB (+119 MB during training)
+ batch_size  optimizer_steps  throughput_samples_s  train_seconds  peak_rss_mb  peak_rss_increase_mb  final_train_loss  final_val_acc  test_acc
+         32             8595             1007.7372       281.1651     425.6875               70.7695            0.2185         0.9108    0.9067
+         64             4300             1334.4709       215.7973     425.1406               71.1641            0.2412         0.9018    0.8950
+        128             2150             1575.3349       184.7495     427.5195               71.8672            0.2645         0.8952    0.8913
+        256             1075             1437.3011       198.2576     437.0039               81.6250            0.2899         0.8924    0.8859
+        512              540             1830.5127       160.5691     474.0859              118.7695            0.3286         0.8804    0.8766
+
+########## task5_schedules ##########
+$ train.py --set optimizer.name=sgd --set optimizer.lr=0.02 --set optimizer.momentum=0.9 --set scheduler.name=step --set training.epochs=10 --set mlflow.experiment=lab06-task5-schedules --set mlflow.run_name=sgd-step
+2026/11/17 20:24:09 INFO mlflow.tracking.fluent: Experiment with name 'lab06-task5-schedules' does not exist. Creating a new experiment.
+[sgd-step] epoch 1/10  lr 2.00e-02  train_loss 0.5179  val_loss 0.4536  val_acc 0.8316  58.9s (933 samples/s)
+[sgd-step] epoch 2/10  lr 2.00e-02  train_loss 0.3330  val_loss 0.3135  val_acc 0.8888  31.3s (1759 samples/s)
+[sgd-step] epoch 3/10  lr 2.00e-02  train_loss 0.2875  val_loss 0.3028  val_acc 0.8912  32.8s (1676 samples/s)
+[sgd-step] epoch 4/10  lr 2.00e-02  train_loss 0.2664  val_loss 0.2899  val_acc 0.8966  34.0s (1619 samples/s)
+[sgd-step] epoch 5/10  lr 2.00e-03  train_loss 0.2259  val_loss 0.2690  val_acc 0.9010  32.1s (1712 samples/s)
+[sgd-step] epoch 6/10  lr 2.00e-03  train_loss 0.2196  val_loss 0.2683  val_acc 0.9006  31.7s (1736 samples/s)
+[sgd-step] epoch 7/10  lr 2.00e-03  train_loss 0.2176  val_loss 0.2644  val_acc 0.9032  27.6s (1992 samples/s)
+[sgd-step] epoch 8/10  lr 2.00e-03  train_loss 0.2146  val_loss 0.2609  val_acc 0.9028  23.3s (2360 samples/s)
+[sgd-step] epoch 9/10  lr 2.00e-04  train_loss 0.2096  val_loss 0.2603  val_acc 0.9046  21.1s (2609 samples/s)
+[sgd-step] epoch 10/10  lr 2.00e-04  train_loss 0.2089  val_loss 0.2602  val_acc 0.9056  21.7s (2532 samples/s)
+[sgd-step] test_acc 0.9076  peak RSS 425 MB (+70 MB during training)
+$ train.py --set optimizer.name=sgd --set optimizer.lr=0.02 --set optimizer.momentum=0.9 --set scheduler.name=cosine --set training.epochs=10 --set mlflow.experiment=lab06-task5-schedules --set mlflow.run_name=sgd-cosine
+[sgd-cosine] epoch 1/10  lr 2.00e-02  train_loss 0.5179  val_loss 0.4536  val_acc 0.8316  37.6s (1464 samples/s)
+[sgd-cosine] epoch 2/10  lr 1.95e-02  train_loss 0.3326  val_loss 0.3140  val_acc 0.8886  24.6s (2236 samples/s)
+[sgd-cosine] epoch 3/10  lr 1.81e-02  train_loss 0.2863  val_loss 0.3017  val_acc 0.8906  25.5s (2160 samples/s)
+[sgd-cosine] epoch 4/10  lr 1.59e-02  train_loss 0.2635  val_loss 0.2852  val_acc 0.8982  22.4s (2460 samples/s)
+[sgd-cosine] epoch 5/10  lr 1.31e-02  train_loss 0.2427  val_loss 0.2816  val_acc 0.8994  23.0s (2392 samples/s)
+[sgd-cosine] epoch 6/10  lr 1.00e-02  train_loss 0.2269  val_loss 0.2656  val_acc 0.9012  26.2s (2099 samples/s)
+[sgd-cosine] epoch 7/10  lr 6.91e-03  train_loss 0.2137  val_loss 0.2594  val_acc 0.9098  23.3s (2365 samples/s)
+[sgd-cosine] epoch 8/10  lr 4.12e-03  train_loss 0.2030  val_loss 0.2540  val_acc 0.9060  23.6s (2331 samples/s)
+[sgd-cosine] epoch 9/10  lr 1.91e-03  train_loss 0.1954  val_loss 0.2535  val_acc 0.9074  24.3s (2261 samples/s)
+[sgd-cosine] epoch 10/10  lr 4.89e-04  train_loss 0.1905  val_loss 0.2509  val_acc 0.9084  26.9s (2046 samples/s)
+[sgd-cosine] test_acc 0.9118  peak RSS 424 MB (+69 MB during training)
+$ train.py --set optimizer.name=sgd --set optimizer.lr=0.02 --set optimizer.momentum=0.9 --set scheduler.name=plateau --set training.epochs=10 --set mlflow.experiment=lab06-task5-schedules --set mlflow.run_name=sgd-plateau
+[sgd-plateau] epoch 1/10  lr 2.00e-02  train_loss 0.5179  val_loss 0.4536  val_acc 0.8316  33.5s (1641 samples/s)
+[sgd-plateau] epoch 2/10  lr 2.00e-02  train_loss 0.3330  val_loss 0.3135  val_acc 0.8888  23.3s (2356 samples/s)
+[sgd-plateau] epoch 3/10  lr 2.00e-02  train_loss 0.2875  val_loss 0.3028  val_acc 0.8912  21.5s (2552 samples/s)
+[sgd-plateau] epoch 4/10  lr 2.00e-02  train_loss 0.2664  val_loss 0.2899  val_acc 0.8966  21.6s (2551 samples/s)
+[sgd-plateau] epoch 5/10  lr 2.00e-02  train_loss 0.2482  val_loss 0.2778  val_acc 0.9010  21.3s (2585 samples/s)
+[sgd-plateau] epoch 6/10  lr 2.00e-02  train_loss 0.2359  val_loss 0.2714  val_acc 0.9016  21.8s (2519 samples/s)
+[sgd-plateau] epoch 7/10  lr 2.00e-02  train_loss 0.2253  val_loss 0.2602  val_acc 0.9076  20.3s (2708 samples/s)
+[sgd-plateau] epoch 8/10  lr 2.00e-02  train_loss 0.2143  val_loss 0.2549  val_acc 0.9046  22.2s (2473 samples/s)
+[sgd-plateau] epoch 9/10  lr 2.00e-02  train_loss 0.2053  val_loss 0.2610  val_acc 0.9056  21.2s (2592 samples/s)
+[sgd-plateau] epoch 10/10  lr 2.00e-02  train_loss 0.1966  val_loss 0.2727  val_acc 0.9024  21.7s (2533 samples/s)
+[sgd-plateau] test_acc 0.9040  peak RSS 424 MB (+69 MB during training)
+$ train.py --set optimizer.name=adam --set optimizer.lr=0.001 --set scheduler.name=step --set training.epochs=10 --set mlflow.experiment=lab06-task5-schedules --set mlflow.run_name=adam-step
+[adam-step] epoch 1/10  lr 1.00e-03  train_loss 0.5279  val_loss 0.4429  val_acc 0.8400  37.3s (1476 samples/s)
+[adam-step] epoch 2/10  lr 1.00e-03  train_loss 0.3524  val_loss 0.3339  val_acc 0.8816  26.4s (2080 samples/s)
+[adam-step] epoch 3/10  lr 1.00e-03  train_loss 0.3080  val_loss 0.3100  val_acc 0.8902  27.5s (2001 samples/s)
+[adam-step] epoch 4/10  lr 1.00e-03  train_loss 0.2845  val_loss 0.2998  val_acc 0.8976  26.3s (2092 samples/s)
+[adam-step] epoch 5/10  lr 1.00e-04  train_loss 0.2482  val_loss 0.2843  val_acc 0.9006  26.2s (2099 samples/s)
+[adam-step] epoch 6/10  lr 1.00e-04  train_loss 0.2432  val_loss 0.2814  val_acc 0.9028  27.9s (1975 samples/s)
+[adam-step] epoch 7/10  lr 1.00e-04  train_loss 0.2411  val_loss 0.2802  val_acc 0.9006  24.1s (2284 samples/s)
+[adam-step] epoch 8/10  lr 1.00e-04  train_loss 0.2385  val_loss 0.2758  val_acc 0.9044  25.2s (2185 samples/s)
+[adam-step] epoch 9/10  lr 1.00e-05  train_loss 0.2334  val_loss 0.2750  val_acc 0.9044  23.7s (2317 samples/s)
+[adam-step] epoch 10/10  lr 1.00e-05  train_loss 0.2329  val_loss 0.2749  val_acc 0.9050  25.1s (2193 samples/s)
+[adam-step] test_acc 0.8975  peak RSS 428 MB (+72 MB during training)
+$ train.py --set optimizer.name=adam --set optimizer.lr=0.001 --set scheduler.name=cosine --set training.epochs=10 --set mlflow.experiment=lab06-task5-schedules --set mlflow.run_name=adam-cosine
+[adam-cosine] epoch 1/10  lr 1.00e-03  train_loss 0.5279  val_loss 0.4429  val_acc 0.8400  66.0s (833 samples/s)
+[adam-cosine] epoch 2/10  lr 9.76e-04  train_loss 0.3522  val_loss 0.3343  val_acc 0.8806  36.1s (1521 samples/s)
+[adam-cosine] epoch 3/10  lr 9.05e-04  train_loss 0.3074  val_loss 0.3114  val_acc 0.8908  40.1s (1372 samples/s)
+[adam-cosine] epoch 4/10  lr 7.94e-04  train_loss 0.2834  val_loss 0.3007  val_acc 0.8944  35.8s (1536 samples/s)
+[adam-cosine] epoch 5/10  lr 6.55e-04  train_loss 0.2626  val_loss 0.3029  val_acc 0.8930  46.3s (1188 samples/s)
+[adam-cosine] epoch 6/10  lr 5.00e-04  train_loss 0.2484  val_loss 0.2789  val_acc 0.8982  43.9s (1254 samples/s)
+[adam-cosine] epoch 7/10  lr 3.45e-04  train_loss 0.2357  val_loss 0.2736  val_acc 0.9056  37.4s (1469 samples/s)
+[adam-cosine] epoch 8/10  lr 2.06e-04  train_loss 0.2266  val_loss 0.2664  val_acc 0.9054  37.2s (1480 samples/s)
+[adam-cosine] epoch 9/10  lr 9.55e-05  train_loss 0.2195  val_loss 0.2646  val_acc 0.9066  32.7s (1680 samples/s)
+[adam-cosine] epoch 10/10  lr 2.45e-05  train_loss 0.2157  val_loss 0.2635  val_acc 0.9084  38.9s (1413 samples/s)
+[adam-cosine] test_acc 0.9021  peak RSS 428 MB (+72 MB during training)
+$ train.py --set optimizer.name=adam --set optimizer.lr=0.001 --set scheduler.name=plateau --set training.epochs=10 --set mlflow.experiment=lab06-task5-schedules --set mlflow.run_name=adam-plateau
+[adam-plateau] epoch 1/10  lr 1.00e-03  train_loss 0.5279  val_loss 0.4429  val_acc 0.8400  57.2s (962 samples/s)
+[adam-plateau] epoch 2/10  lr 1.00e-03  train_loss 0.3524  val_loss 0.3339  val_acc 0.8816  36.2s (1521 samples/s)
+[adam-plateau] epoch 3/10  lr 1.00e-03  train_loss 0.3080  val_loss 0.3100  val_acc 0.8902  36.3s (1514 samples/s)
+[adam-plateau] epoch 4/10  lr 1.00e-03  train_loss 0.2845  val_loss 0.2998  val_acc 0.8976  36.2s (1521 samples/s)
+[adam-plateau] epoch 5/10  lr 1.00e-03  train_loss 0.2645  val_loss 0.2944  val_acc 0.8952  37.2s (1477 samples/s)
+[adam-plateau] epoch 6/10  lr 1.00e-03  train_loss 0.2501  val_loss 0.2823  val_acc 0.8992  33.6s (1637 samples/s)
+[adam-plateau] epoch 7/10  lr 1.00e-03  train_loss 0.2383  val_loss 0.2658  val_acc 0.9060  34.3s (1601 samples/s)
+[adam-plateau] epoch 8/10  lr 1.00e-03  train_loss 0.2271  val_loss 0.2515  val_acc 0.9104  39.7s (1385 samples/s)
+[adam-plateau] epoch 9/10  lr 1.00e-03  train_loss 0.2166  val_loss 0.2640  val_acc 0.9102  34.6s (1591 samples/s)
+[adam-plateau] epoch 10/10  lr 1.00e-03  train_loss 0.2090  val_loss 0.2574  val_acc 0.9084  35.5s (1551 samples/s)
+[adam-plateau] test_acc 0.9032  peak RSS 428 MB (+72 MB during training)
+optimizer scheduler  final_lr  final_train_loss  final_val_loss  final_val_acc  best_val_acc  best_epoch  test_acc  train_seconds
+      sgd      step    0.0002            0.2089          0.2602         0.9056        0.9056          10    0.9076       314.5578
+      sgd    cosine    0.0005            0.1905          0.2509         0.9084        0.9098           7    0.9118       257.2534
+      sgd   plateau    0.0200            0.1966          0.2727         0.9024        0.9076           7    0.9040       228.5786
+     adam      step    0.0000            0.2329          0.2749         0.9050        0.9050          10    0.8975       269.6017
+     adam    cosine    0.0000            0.2157          0.2635         0.9084        0.9084          10    0.9021       414.4705
+     adam   plateau    0.0010            0.2090          0.2574         0.9084        0.9104           8    0.9032       380.7647
+Traceback (most recent call last):
+  File "D:\school\5 semester\ML-Labs\lab06\src\task5_schedules.py", line 42, in <module>
+    fig, axes = plt.subplots(2, 3, figsize=(14, 7), sharex=True)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\pyplot.py", line 1702, in subplots
+    fig = figure(**fig_kw)
+          ^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\pyplot.py", line 1022, in figure
+    manager = new_figure_manager(
+              ^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\pyplot.py", line 545, in new_figure_manager
+    return _get_backend_mod().new_figure_manager(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\backend_bases.py", line 3521, in new_figure_manager
+    return cls.new_figure_manager_given_figure(num, fig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\backend_bases.py", line 3526, in new_figure_manager_given_figure
+    return cls.FigureCanvas.new_manager(figure, num)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\backend_bases.py", line 1811, in new_manager
+    return cls.manager_class.create_with_canvas(cls, figure, num)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\backends\_backend_tk.py", line 479, in create_with_canvas
+    with _restore_foreground_window_at_end():
+  File "C:\Users\Sylvain\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\backends\_backend_tk.py", line 43, in _restore_foreground_window_at_end
+    foreground = _c_internal_utils.Win32_GetForegroundWindow()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: PyCapsule_New called with null pointer
+
+########## task6_accumulation ##########
+one step: max |grad(batch 256) - grad(64 x 4 accumulated)| = 1.32e-07
+$ train.py --set training.batch_size=256 --set training.accumulation_steps=1 --set training.epochs=5 --set mlflow.experiment=lab06-task6-accumulation --set mlflow.run_name=batch256
+2026/11/17 21:00:43 INFO mlflow.tracking.fluent: Experiment with name 'lab06-task6-accumulation' does not exist. Creating a new experiment.
+[batch256] epoch 1/5  lr 1.00e-03  train_loss 0.6269  val_loss 0.4356  val_acc 0.8476  57.0s (965 samples/s)
+[batch256] epoch 2/5  lr 1.00e-03  train_loss 0.3862  val_loss 0.3912  val_acc 0.8578  34.5s (1593 samples/s)
+[batch256] epoch 3/5  lr 1.00e-03  train_loss 0.3396  val_loss 0.3527  val_acc 0.8778  36.1s (1525 samples/s)
+[batch256] epoch 4/5  lr 1.00e-03  train_loss 0.3116  val_loss 0.3260  val_acc 0.8860  31.3s (1756 samples/s)
+[batch256] epoch 5/5  lr 1.00e-03  train_loss 0.2899  val_loss 0.3160  val_acc 0.8924  33.3s (1652 samples/s)
+[batch256] test_acc 0.8859  peak RSS 437 MB (+82 MB during training)
+$ train.py --set training.batch_size=64 --set training.accumulation_steps=4 --set training.epochs=5 --set mlflow.experiment=lab06-task6-accumulation --set mlflow.run_name=batch64x4
+[batch64x4] epoch 1/5  lr 1.00e-03  train_loss 0.6269  val_loss 0.4357  val_acc 0.8472  61.6s (892 samples/s)
+[batch64x4] epoch 2/5  lr 1.00e-03  train_loss 0.3862  val_loss 0.3911  val_acc 0.8574  37.5s (1466 samples/s)
+[batch64x4] epoch 3/5  lr 1.00e-03  train_loss 0.3396  val_loss 0.3527  val_acc 0.8782  37.5s (1467 samples/s)
+[batch64x4] epoch 4/5  lr 1.00e-03  train_loss 0.3117  val_loss 0.3263  val_acc 0.8862  39.3s (1398 samples/s)
+[batch64x4] epoch 5/5  lr 1.00e-03  train_loss 0.2899  val_loss 0.3160  val_acc 0.8926  38.3s (1437 samples/s)
+[batch64x4] test_acc 0.8863  peak RSS 427 MB (+71 MB during training)
+ epoch  train_loss_256  train_loss_64x4  val_acc_256  val_acc_64x4  abs_diff_train_loss  abs_diff_val_acc
+     1         0.62689          0.62688      0.84760       0.84720              0.00001           0.00040
+     2         0.38616          0.38621      0.85780       0.85740              0.00005           0.00040
+     3         0.33961          0.33962      0.87780       0.87820              0.00001           0.00040
+     4         0.31163          0.31167      0.88600       0.88620              0.00004           0.00020
+     5         0.28988          0.28986      0.89240       0.89260              0.00002           0.00020
+      run  optimizer_steps  throughput_samples_s  train_seconds  peak_rss_increase_mb  final_train_loss  final_val_acc  test_acc
+ batch256             1075             1498.0908       192.2062               81.6719            0.2899         0.8924    0.8859
+batch64x4             1075             1332.1416       214.2437               70.9609            0.2899         0.8926    0.8863
+Traceback (most recent call last):
+  File "D:\school\5 semester\ML-Labs\lab06\src\task6_accumulation.py", line 68, in <module>
+    fig, (l, r) = plt.subplots(1, 2, figsize=(10, 3.8))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\pyplot.py", line 1702, in subplots
+    fig = figure(**fig_kw)
+          ^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\pyplot.py", line 1022, in figure
+    manager = new_figure_manager(
+              ^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\pyplot.py", line 545, in new_figure_manager
+    return _get_backend_mod().new_figure_manager(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\backend_bases.py", line 3521, in new_figure_manager
+    return cls.new_figure_manager_given_figure(num, fig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\backend_bases.py", line 3526, in new_figure_manager_given_figure
+    return cls.FigureCanvas.new_manager(figure, num)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\backend_bases.py", line 1811, in new_manager
+    return cls.manager_class.create_with_canvas(cls, figure, num)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\backends\_backend_tk.py", line 479, in create_with_canvas
+    with _restore_foreground_window_at_end():
+  File "C:\Users\Sylvain\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\school\5 semester\ML-Labs\.venv\Lib\site-packages\matplotlib\backends\_backend_tk.py", line 43, in _restore_foreground_window_at_end
+    foreground = _c_internal_utils.Win32_GetForegroundWindow()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: PyCapsule_New called with null pointer
+
+########## task7_resume ##########
+$ train.py --set mlflow.experiment=lab06-task7-resume --set mlflow.run_name=resume --set training.interrupt_after_epoch=3
+2026/11/17 21:09:11 INFO mlflow.tracking.fluent: Experiment with name 'lab06-task7-resume' does not exist. Creating a new experiment.
+[resume] epoch 1/10  lr 1.00e-03  train_loss 0.5279  val_loss 0.4429  val_acc 0.8400  59.3s (928 samples/s)
+[resume] epoch 2/10  lr 1.00e-03  train_loss 0.3524  val_loss 0.3339  val_acc 0.8816  37.5s (1468 samples/s)
+[resume] epoch 3/10  lr 1.00e-03  train_loss 0.3080  val_loss 0.3100  val_acc 0.8902  32.2s (1710 samples/s)
+[resume] simulated crash after epoch 3 (checkpoint saved)
+$ train.py --set mlflow.experiment=lab06-task7-resume --set mlflow.run_name=resume --resume
+[resume] resumed from lab06\checkpoints\resume\last.pt at epoch 3
+[resume] epoch 4/10  lr 1.00e-03  train_loss 0.2845  val_loss 0.2998  val_acc 0.8976  62.9s (874 samples/s)
+[resume] epoch 5/10  lr 1.00e-03  train_loss 0.2645  val_loss 0.2944  val_acc 0.8952  32.9s (1673 samples/s)
+[resume] epoch 6/10  lr 1.00e-03  train_loss 0.2501  val_loss 0.2823  val_acc 0.8992  38.7s (1420 samples/s)
+[resume] epoch 7/10  lr 1.00e-03  train_loss 0.2383  val_loss 0.2658  val_acc 0.9060  34.8s (1578 samples/s)
+[resume] epoch 8/10  lr 1.00e-03  train_loss 0.2271  val_loss 0.2515  val_acc 0.9104  36.7s (1498 samples/s)
+[resume] epoch 9/10  lr 1.00e-03  train_loss 0.2166  val_loss 0.2640  val_acc 0.9102  36.7s (1500 samples/s)
+[resume] epoch 10/10  lr 1.00e-03  train_loss 0.2090  val_loss 0.2574  val_acc 0.9084  37.3s (1474 samples/s)
+[resume] test_acc 0.9032  peak RSS 426 MB (+71 MB during training)
+ epoch          leg  train_loss_resumed  train_loss_reference  val_acc_resumed  val_acc_reference  abs_diff_train_loss  abs_diff_val_acc
+     1 before crash             0.52792               0.52792          0.84000            0.84000              0.00000           0.00000
+     2 before crash             0.35240               0.35240          0.88160            0.88160              0.00000           0.00000
+     3 before crash             0.30800               0.30800          0.89020            0.89020              0.00000           0.00000
+     4 after resume             0.28448               0.28448          0.89760            0.89760              0.00000           0.00000
+     5 after resume             0.26445               0.26445          0.89520            0.89520              0.00000           0.00000
+     6 after resume             0.25013               0.25013          0.89920            0.89920              0.00000           0.00000
+     7 after resume             0.23827               0.23827          0.90600            0.90600              0.00000           0.00000
+     8 after resume             0.22713               0.22713          0.91040            0.91040              0.00000           0.00000
+     9 after resume             0.21661               0.21661          0.91020            0.91020              0.00000           0.00000
+    10 after resume             0.20902               0.20902          0.90840            0.90840              0.00000           0.00000
+resumed run test_acc 0.9032
+
+########## export_mlflow ##########
+              experiment tags.mlflow.runName   status params.optimizer.name params.optimizer.lr params.scheduler.name params.training.batch_size params.training.accumulation_steps params.training.epochs params.data.num_workers  metrics.val_acc  metrics.test_acc  metrics.throughput  metrics.peak_rss_increase_mb tags.resumed_at_epoch
+     lab06-task3-workers           workers=0 FINISHED                  adam               0.001                  none                        128                                  1                     10                       0              NaN               NaN                 NaN                           NaN                  None
+     lab06-task3-workers           workers=1 FINISHED                  adam               0.001                  none                        128                                  1                     10                       1              NaN               NaN                 NaN                           NaN                  None
+     lab06-task3-workers           workers=2 FINISHED                  adam               0.001                  none                        128                                  1                     10                       2              NaN               NaN                 NaN                           NaN                  None
+     lab06-task3-workers           workers=4 FINISHED                  adam               0.001                  none                        128                                  1                     10                       4              NaN               NaN                 NaN                           NaN                  None
+     lab06-task3-workers           workers=8 FINISHED                  adam               0.001                  none                        128                                  1                     10                       8              NaN               NaN                 NaN                           NaN                  None
+          lab06-pipeline            baseline FINISHED                  adam               0.001                  none                        128                                  1                     10                       2           0.9084            0.9032         1589.781569                     71.859375                  None
+       lab06-task4-batch             batch32 FINISHED                  adam               0.001                  none                         32                                  1                      5                       2           0.9108            0.9067          975.683489                     70.769531                  None
+       lab06-task4-batch             batch64 FINISHED                  adam               0.001                  none                         64                                  1                      5                       2           0.9018            0.8950         1547.198123                     71.164062                  None
+       lab06-task4-batch            batch128 FINISHED                  adam               0.001                  none                        128                                  1                      5                       2           0.8952            0.8913         1851.157961                     71.867188                  None
+       lab06-task4-batch            batch256 FINISHED                  adam               0.001                  none                        256                                  1                      5                       2           0.8924            0.8859         1519.414368                     81.625000                  None
+       lab06-task4-batch            batch512 FINISHED                  adam               0.001                  none                        512                                  1                      5                       2           0.8804            0.8766         1721.848617                    118.769531                  None
+   lab06-task5-schedules            sgd-step FINISHED                   sgd                0.02                  step                        128                                  1                     10                       2           0.9056            0.9076         2531.910427                     69.746094                  None
+   lab06-task5-schedules          sgd-cosine FINISHED                   sgd                0.02                cosine                        128                                  1                     10                       2           0.9084            0.9118         2045.621252                     69.218750                  None
+   lab06-task5-schedules         sgd-plateau FINISHED                   sgd                0.02               plateau                        128                                  1                     10                       2           0.9024            0.9040         2532.888626                     69.421875                  None
+   lab06-task5-schedules           adam-step FINISHED                  adam               0.001                  step                        128                                  1                     10                       2           0.9050            0.8975         2192.733090                     72.003906                  None
+   lab06-task5-schedules         adam-cosine FINISHED                  adam               0.001                cosine                        128                                  1                     10                       2           0.9084            0.9021         1413.101632                     72.300781                  None
+   lab06-task5-schedules        adam-plateau FINISHED                  adam               0.001               plateau                        128                                  1                     10                       2           0.9084            0.9032         1551.234477                     72.480469                  None
+lab06-task6-accumulation            batch256 FINISHED                  adam               0.001                  none                        256                                  1                      5                       2           0.8924            0.8859         1651.911706                     81.671875                  None
+lab06-task6-accumulation           batch64x4 FINISHED                  adam               0.001                  none                         64                                  4                      5                       2           0.8926            0.8863         1437.035850                     70.960938                  None
+      lab06-task7-resume              resume FINISHED                  adam               0.001                  none                        128                                  1                     10                       2           0.9084            0.9032         1474.319162                     70.984375                     4
+
+# The two matplotlib tracebacks above (Tk backend, no foreground window) were fixed by forcing the Agg backend;
+# schedule_study.png and accumulation.png were redrawn from the saved CSVs with --plot-only.

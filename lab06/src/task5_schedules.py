@@ -5,6 +5,8 @@ usual defaults for each optimizer (SGD 0.02 with momentum 0.9, Adam 1e-3). Adam 
 baseline run, used as the no-schedule reference.
 """
 
+import sys
+
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -15,7 +17,7 @@ OPTIMIZERS = {"sgd": ["optimizer.name=sgd", "optimizer.lr=0.02", "optimizer.mome
               "adam": ["optimizer.name=adam", "optimizer.lr=0.001"]}
 SCHEDULERS = ["step", "cosine", "plateau"]
 
-if __name__ == "__main__":
+if __name__ == "__main__" and "--plot-only" not in sys.argv:
     rows, curves = [], []
     for opt_name, opt_args in OPTIMIZERS.items():
         for sched in SCHEDULERS:
@@ -38,7 +40,10 @@ if __name__ == "__main__":
     allc = pd.concat(curves)
     allc.to_csv(RESULTS_DIR / "schedule_study_curves.csv", index=False, float_format="%.6f")
     print(df.to_string(index=False, float_format="%.4f"))
+    plot(allc)
 
+
+def plot(allc: pd.DataFrame) -> None:
     fig, axes = plt.subplots(2, 3, figsize=(14, 7), sharex=True)
     for col, opt_name in enumerate(OPTIMIZERS):
         sub = allc[allc.optimizer == opt_name]
@@ -58,3 +63,7 @@ if __name__ == "__main__":
     axes[1, 2].axis("off")
     fig.tight_layout()
     fig.savefig(RESULTS_DIR / "schedule_study.png", dpi=130)
+
+
+if __name__ == "__main__" and "--plot-only" in sys.argv:  # redraw from the saved CSV, no training
+    plot(pd.read_csv(RESULTS_DIR / "schedule_study_curves.csv"))

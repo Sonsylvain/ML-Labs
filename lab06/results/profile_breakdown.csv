@@ -1,0 +1,15 @@
+num_workers,phase,seconds,share
+0,data_loading,30.4073,0.6090
+0,forward,8.2064,0.1644
+0,backward,10.0385,0.2011
+0,optimizer_step,1.2113,0.0243
+0,other,0.0665,0.0013
+0,epoch_total,49.9300,1.0000
+0,profiler_overhead_excluded,385.9334,
+2,data_loading,0.3344,0.0106
+2,forward,9.7427,0.3084
+2,backward,11.0855,0.3509
+2,optimizer_step,1.2947,0.0410
+2,other,9.1323,0.2891
+2,epoch_total,31.5896,1.0000
+2,profiler_overhead_excluded,29.6161,
